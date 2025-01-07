@@ -1,14 +1,17 @@
-const { StatusCodes } = require("http-status-codes")
+import { StatusCodes }  from "http-status-codes"
 
 
-export const createProduct = async(req,res) =>{
+
+export const createProduct = async(req,res,next) =>{
     try {
+        // throw new ApiError(StatusCodes.BAD_REQUEST,'error')
         return res.status(StatusCodes.CREATED).json({
             message:'CREATE SUCCSS'
         })
     } catch (error) {
-        return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-            message:error.message
-        })
+        // return res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+        //     message:error.message
+        // })
+        next(error)
     }
 }
