@@ -1,8 +1,8 @@
 import { MongoClient, ServerApiVersion } from "mongodb";
-import { evn } from "./environment.js";
+import { env } from "./environment.js";
 
-const MONGODB_URI = evn.MONGODB_URI
-const DB_NAME = evn.DB_NAME
+const MONGODB_URI = env.MONGODB_URI
+const DB_NAME = env.DB_NAME
 let apiDatabaseInstance = null
 const mongoClient = new MongoClient(MONGODB_URI,{
     serverApi: {
