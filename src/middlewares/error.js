@@ -1,8 +1,8 @@
 import { StatusCodes } from "http-status-codes"
 
 
-export const errorHandler =  (err, req, res) =>{
-
+export const errorHandler =  (err, req, res, next) =>{
+   
     // Nếu dev không cẩn thận thiếu status code thì mặc định status code sẽ là INTERNAL_SERVER_ERROR
    if(!err.statusCode) err.statusCode = StatusCodes.INTERNAL_SERVER_ERROR
 
@@ -12,6 +12,7 @@ export const errorHandler =  (err, req, res) =>{
     message:err.message || StatusCodes[err.statusCode],
     stack:err.stack
    }
+   
 
    return res.status(responseError.statusCode).json(responseError)
 }
