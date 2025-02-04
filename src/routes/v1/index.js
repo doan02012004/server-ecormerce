@@ -1,7 +1,7 @@
 import express from 'express' 
 import productRoute from './productRoute.js'
 import uploadRoute from './uploadRoute.js'
-
+import categoryRoute from './categoryRoute.js'
 const router = express.Router();
 
 const defaultRoutes = [
@@ -12,6 +12,10 @@ const defaultRoutes = [
   {
     path: '/images',
     route: uploadRoute,
+  },
+  {
+    path: '/categories',
+    route: categoryRoute,
   }
 ];
 
