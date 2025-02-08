@@ -11,11 +11,51 @@ const productSchema = new mongoose.Schema({
         required:true,
         unique:true
     },
-    categoryId:{
+    type:{
+        type:String,
+        required:true,
+        enum:['simple','configurabel']
+    },
+    images:[
+        {
+            type:String
+        }
+    ],
+    status:{
+        type:Boolean,
+        default:true
+    },
+    original_price: {
+        type:Number,
+        default:0
+    },
+    price: {
+        type:Number,
+        default:0
+    },
+    stock:{
+        type:Number,
+        default:0
+    },
+    description:{
+        type:String
+    },
+    volume:{
+        type:Number,
+        default:0
+    },
+    sku:{
+        type:String,
+        default:null
+    },
+    weight:{
+        type:Number,
+        default:0
+    },
+    category_id:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"categories"
     }
-
 }, {
     timestamps:true, versionKey:false
 })
