@@ -1,10 +1,6 @@
 import mongoose from "mongoose"
 
 const valuesOptionsShema = new mongoose.Schema({
-    value:{
-        type:String,
-        required:true
-    },
     label:{
         type:String,
         required:true

@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 
 
+
 const productSchema = new mongoose.Schema({
     name:{
         type:String,
@@ -14,48 +15,50 @@ const productSchema = new mongoose.Schema({
     type:{
         type:String,
         required:true,
-        enum:['simple','configurabel']
+        enum:['simple','configurable'],
+        default:'simple'
     },
     images:[
         {
-            type:String
+           url:{
+            type:String,
+            required:true
+           }
         }
     ],
     status:{
         type:Boolean,
         default:true
     },
-    original_price: {
-        type:Number,
-        default:0
-    },
-    price: {
-        type:Number,
-        default:0
-    },
-    stock:{
-        type:Number,
-        default:0
-    },
-    description:{
-        type:String
-    },
     volume:{
         type:Number,
         default:0
     },
-    sku:{
-        type:String,
-        default:null
+    height:{
+        type:Number,
+        required:true,
+        default:0
+    },
+    width:{
+        type:Number,
+        required:true,
+        default:0
+    },
+    length:{
+        type:Number,
+        required:true,
+        default:0
     },
     weight:{
         type:Number,
         default:0
     },
-    category_id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"categories"
-    }
+    categories:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'categories'
+        }
+    ]
 }, {
     timestamps:true, versionKey:false
 })

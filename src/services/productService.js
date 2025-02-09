@@ -1,50 +1,58 @@
 import mongoose from "mongoose";
-import ProductModel from "../models/productModel";
-import ProductOptionModel from "../models/productOptionModel";
-import ProductVariantModel from "../models/productVariantModel";
-import slugify from "../utils/slug";
+import ProductModel from "../models/productModel.js";
+import ProductOptionModel from "../models/productOptionModel.js";
+import ProductVariantModel from "../models/productVariantModel.js";
+import slugify from "../utils/slug.js";
+import { calculateDiscount, calculateVolume } from "../utils/main.js";
 
 
-const productCreate = async(info,options,variants) => {
+const CreateProduct = async (data) => {
     const session = await mongoose.startSession(); // Bắt đầu session
     session.startTransaction(); // Bắt đầu transaction
-    
+
     // insert product infor
     const newInfor = {
-        ...info,
-        slug:slugify(info.name)
+        ...data,
+        slug: slugify(data.name),
+        categories: data?.categories?.map((item) => item._id),
+        volume: calculateVolume(data.height, data.width, data.length)
     }
-    const product_infor = await ProductModel.create(newInfor)
+    const product = await ProductModel.create(newInfor)
 
     // check type product
-    if(product_infor.type =='configurabel'){
+    if (product.type == 'configurable') {
         // insert product options
-        for(const option of options){
+        for (const option of data.options) {
             await ProductOptionModel.create({
                 ...option,
-                product_id:product_infor._id
-            })
-        }
-
-        // insert product variants
-        for(const variant of variants){
-            await ProductVariantModel.create({
-                ...variant,
-                product_id:product_infor._id
+                product_id: product._id
             })
         }
     }
-
-     // Hoàn tất transaction
-     await session.commitTransaction();
-     session.endSession();
+    
+    // insert product variants
+    for (const variant of data.models) {
+        await ProductVariantModel.create({
+            ...variant,
+            discount: calculateDiscount(variant.original_price,variant.price),
+            weight: product.weight,
+            volume: product.volume,
+            height: product.height,
+            width: product.width,
+            length: product.length,
+            product_id: product._id
+        })
+    }
+    // Hoàn tất transaction
+    await session.commitTransaction();
+    session.endSession();
 
     return {
-        message:'Tạo sản phẩm mới thành công'
+        message: 'Tạo sản phẩm mới thành công'
     }
 }
 
 
 export default {
-    productCreate
+    CreateProduct
 }
