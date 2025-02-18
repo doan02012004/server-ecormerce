@@ -7,6 +7,10 @@ const productSchema = new mongoose.Schema({
         type:String,
         required:true
     },
+    description:{
+        type:String,
+        default:''
+    },
     slug:{
         type:String,
         required:true,
@@ -30,24 +34,32 @@ const productSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    volume:{
+    // volume:{
+    //     type:Number,
+    //     default:0
+    // },
+    // height:{
+    //     type:Number,
+    //     required:true,
+    //     default:0
+    // },
+    // width:{
+    //     type:Number,
+    //     required:true,
+    //     default:0
+    // },
+    // length:{
+    //     type:Number,
+    //     required:true,
+    //     default:0
+    // },
+    sold:{
         type:Number,
         default:0
     },
-    height:{
+    rate:{
         type:Number,
-        required:true,
-        default:0
-    },
-    width:{
-        type:Number,
-        required:true,
-        default:0
-    },
-    length:{
-        type:Number,
-        required:true,
-        default:0
+        default:3
     },
     weight:{
         type:Number,

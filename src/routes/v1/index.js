@@ -2,6 +2,8 @@ import express from 'express'
 import productRoute from './productRoute.js'
 import uploadRoute from './uploadRoute.js'
 import categoryRoute from './categoryRoute.js'
+import userRoute from './userRoute.js'
+import cartRoute from './cartRoute.js'
 const router = express.Router();
 
 const defaultRoutes = [
@@ -16,6 +18,14 @@ const defaultRoutes = [
   {
     path: '/categories',
     route: categoryRoute,
+  },
+  {
+    path: '/users',
+    route: userRoute,
+  },
+  {
+    path: '/carts',
+    route: cartRoute,
   }
 ];
 

@@ -17,7 +17,7 @@ const productVariantSchema = new mongoose.Schema({
     },
     name:{
         type:String,
-        required:true
+        default:''
     },
     combinations:[combinationItem],
     price:{
@@ -40,26 +40,30 @@ const productVariantSchema = new mongoose.Schema({
         type:String,
         default:''
     },
-    volume:{
-        type:Number,
-        required:true,
-        default:0
+    image:{
+         type:String,
+        default:''
     },
-    height:{
-        type:Number,
-        required:true,
-        default:0
-    },
-    width:{
-        type:Number,
-        required:true,
-        default:0
-    },
-    length:{
-        type:Number,
-        required:true,
-        default:0
-    },
+    // volume:{
+    //     type:Number,
+    //     required:true,
+    //     default:0
+    // },
+    // height:{
+    //     type:Number,
+    //     required:true,
+    //     default:0
+    // },
+    // width:{
+    //     type:Number,
+    //     required:true,
+    //     default:0
+    // },
+    // length:{
+    //     type:Number,
+    //     required:true,
+    //     default:0
+    // },
     weight:{
         type:Number,
         required:true,
