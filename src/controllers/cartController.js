@@ -20,6 +20,7 @@ const AddToCart = async (req, res, next) => {
         await cartService.AddToCart(product_id, variant_id, quantity, user._id)
 
         return res.status(StatusCodes.CREATED).json({
+            statusCode:201,
             message: 'Thêm giỏ hàng thành công',
             success: true
         })
@@ -42,7 +43,89 @@ const GetCartByUserId = async (req, res, next) => {
 }
 
 
+const IncreaseQuantityCart = async (req, res, next) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            throw new ApiError(StatusCodes.NOT_FOUND, 'Not Found')
+        }
+        const {cartItem_id} = req.body
+
+        const result = await cartService.IncreaseQuantityCart(cartItem_id)
+
+        return res.status(StatusCodes.OK).json({
+            statusCode:201,
+            ...result
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+const DecreaseQuantityCart = async (req, res, next) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            throw new ApiError(StatusCodes.NOT_FOUND, 'Not Found')
+        }
+        const {cartItem_id} = req.body
+
+        const result = await cartService.DecreaseQuantityCart(cartItem_id)
+
+        return res.status(StatusCodes.OK).json({
+            statusCode:201,
+            ...result
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+const UpdateQuantityCart = async (req, res, next) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            throw new ApiError(StatusCodes.NOT_FOUND, 'Not Found')
+        }
+        const {cartItem_id,quantity} = req.body
+
+        const result = await cartService.UpdateQuantityCart(cartItem_id,quantity)
+
+         return res.status(StatusCodes.OK).json({
+            statusCode:201,
+            ...result
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+const DeleteCartItem = async (req, res, next) => {
+    try {
+        const user = req.user;
+        if (!user) {
+            throw new ApiError(StatusCodes.NOT_FOUND, 'Not Found')
+        }
+        const {cartItem_id} = req.body
+        const result = await cartService.DeleteCartItem(cartItem_id)
+
+         return res.status(StatusCodes.OK).json({
+            statusCode:201,
+            ...result
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
 export default {
     AddToCart,
-    GetCartByUserId
+    GetCartByUserId,
+    IncreaseQuantityCart,
+    DecreaseQuantityCart,
+    UpdateQuantityCart,
+    DeleteCartItem
 }
