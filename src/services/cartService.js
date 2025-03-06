@@ -3,6 +3,8 @@ import CartItemModel from "../models/cartItemModels.js"
 import CartModel from "../models/cartModels.js"
 import ApiError from "../utils/ApiError.js"
 import { env } from "../config/environment.js"
+import ProductOptionModel from "../models/productOptionModel.js"
+import CouponModel from "../models/couponModel.js"
 
 
 const AddToCart = async (product_id, variant_id, quantity, user_id) => {
@@ -52,20 +54,25 @@ const AddToCart = async (product_id, variant_id, quantity, user_id) => {
 const GetCartByUserId = async (user_id) => {
 
     const cart = await CartModel.findOne({ user_id })
-    if (cart.length == 0) {
+    if ( !cart ) {
         throw new ApiError(StatusCodes.NOT_FOUND, 'Giỏ hàng không tồn tại')
     }
     const items = await CartItemModel.find({ cart_id: cart._id }).populate('product_id variant_id')
 
-    const newItems = items.map((item) => {
+    const newItems = []
+    for(const item of items){
         const reItem = item.toObject()
         const total = reItem.variant_id ? Number(reItem.variant_id.price * reItem.quantity) : 0
-        return {
-            ...reItem,
-            url_path: `${env.DOMAIN_ORIGIN}/sanpham/${reItem.product_id.slug}`,
-            total: total
-        }
-    })
+        const options = await ProductOptionModel.find({product_id:reItem.product_id._id})
+        newItems.push(
+            {
+                ...reItem,
+                url_path: `${env.DOMAIN_ORIGIN}/sanpham/${reItem.product_id.slug}`,
+                total: total,
+                options: options.map((option) => option.toObject())
+            }
+        )
+    }
     let calculateToTalCarts = 0
     if (newItems.length > 0) {
         calculateToTalCarts = newItems.reduce((sum, item) => item.total + sum, 0)
@@ -156,11 +163,90 @@ const DeleteCartItem = async (cartItem_id) => {
     }
 }
 
+const GetInfoCheckout = async (user_id) => {
+    let info = []
+    const cart = await CartModel.findOne({ user_id })
+    if ( !cart ) {
+        throw new ApiError(StatusCodes.NOT_FOUND, 'Giỏ hàng không tồn tại')
+    }
+    const items = await CartItemModel.find({ cart_id: cart._id }).populate('product_id variant_id')
+
+    // get các item
+    const newItems = []
+    for(const item of items){
+        const reItem = item.toObject()
+        const total = reItem.variant_id ? Number(reItem.variant_id.price * reItem.quantity) : 0
+        const options = await ProductOptionModel.find({product_id:reItem.product_id._id})
+        newItems.push(
+            {
+                ...reItem,
+                url_path: `${env.DOMAIN_ORIGIN}/sanpham/${reItem.product_id.slug}`,
+                total: total,
+                options: options.map((option) => option.toObject())
+            }
+        )
+    }
+    let calculateToTalCarts = 0
+    if (newItems.length > 0) {
+        calculateToTalCarts = newItems.reduce((sum, item) => item.total + sum, 0)
+    }
+
+    // get coupon
+    let couponRespon = null
+    const coupon = await CouponModel.findOne({code:cart.coupon_code})
+    const nowTime = new Date()
+    if(!coupon || coupon.end_date < nowTime.getTime()){
+        cart.coupon_code = null
+        await cart.save()
+    }else{
+        couponRespon = coupon.toObject()
+    }
+   
+    // tính lại giá tiền qua 
+
+    
+    return {
+        ...cart.toObject(),
+        items: newItems,
+        coupon:couponRespon,
+        info:[],
+        total: calculateToTalCarts,
+        sumtotal:calculateToTalCarts
+    }
+}
+
+const ApplyCoupon = async (user_id,code,totalShip,totalCart) => {
+    const cart = await CartModel.findOne({ user_id })
+    if ( !cart) {
+        throw new ApiError(StatusCodes.NOT_FOUND, 'Giỏ hàng không tồn tại')
+    }
+    
+    if(cart.coupon_code.toString() == code) {
+        throw new ApiError(StatusCodes.NOT_FOUND, 'Mã giảm giá đã được áp dụng ')
+    }
+
+    const coupon = await CouponModel.findOne({code:code})
+    if(!coupon){
+        throw new ApiError(StatusCodes.NOT_FOUND, 'Mã giảm giá không tồn tại')
+    }
+    const nowTime = new Date()
+    if( coupon.end_date < nowTime.getTime()){
+        throw new ApiError(StatusCodes.NOT_FOUND, 'Mã giảm giá đã hết hạn')
+    }
+    
+    if(totalCart >= coupon.min_price){
+        cart.code = code
+        await cart.save()
+    }
+    
+}
 export default {
     AddToCart,
     GetCartByUserId,
     IncreaseQuantityCart,
     DecreaseQuantityCart,
     UpdateQuantityCart,
-    DeleteCartItem
+    DeleteCartItem,
+    ApplyCoupon,
+    GetInfoCheckout
 }

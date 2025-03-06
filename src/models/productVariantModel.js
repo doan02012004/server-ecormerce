@@ -1,76 +1,80 @@
 import mongoose from "mongoose"
 
-const combinationItem = new mongoose.Schema({
-    name:{
-        type:String,
-        required:true
-    },
-    value:{
-        type:String,
-        required:true
-    }
-})
+
 const productVariantSchema = new mongoose.Schema({
-    product_id:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"products"
+    product_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "products"
     },
-    name:{
-        type:String,
-        default:''
+    name: {
+        type: String,
+        default: ''
     },
-    combinations:[combinationItem],
-    price:{
+    tiers_index: [
+        {
+            type: Number
+        }
+    ],
+    price: {
+        type: Number,
+        default: 0
+    },
+    original_price: {
+        type: Number,
+        default: 0
+    },
+    discount: {
+        type: Number,
+        default: 0
+    },
+    stock: {
+        type: Number,
+        default: 0
+    },
+    sku: {
+        type: String,
+        default: ''
+    },
+    image: {
+        type: String,
+        default: ''
+    },
+    ship: {
+        height: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        width: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        length: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+    },
+    sold:{
+        type: Number,
+        default: 0
+    },
+    weight: {
+        type: Number,
+        required: true,
+        default: 0
+    },
+    is_default:{
+        type:Boolean,
+        default:false
+    },
+    deleted_at:{
         type:Number,
-        default:0
-    },
-    original_price:{
-        type:Number,
-        default:0
-    },
-    discount:{
-        type:Number,
-        default:0
-    },
-    stock:{
-        type:Number,
-        default:0
-    },
-    sku:{
-        type:String,
-        default:''
-    },
-    image:{
-         type:String,
-        default:''
-    },
-    // volume:{
-    //     type:Number,
-    //     required:true,
-    //     default:0
-    // },
-    // height:{
-    //     type:Number,
-    //     required:true,
-    //     default:0
-    // },
-    // width:{
-    //     type:Number,
-    //     required:true,
-    //     default:0
-    // },
-    // length:{
-    //     type:Number,
-    //     required:true,
-    //     default:0
-    // },
-    weight:{
-        type:Number,
-        required:true,
-        default:0
-    },
+        default:null
+    }
 }, {
-    timestamps:true, versionKey:false
+    timestamps: true, versionKey: false
 })
 
 // productVariantSchema.pre('save', function(next) {
@@ -78,6 +82,6 @@ const productVariantSchema = new mongoose.Schema({
 //     next();
 //   });
 
-const ProductVariantModel = mongoose.model('variants',productVariantSchema)
+const ProductVariantModel = mongoose.model('variants', productVariantSchema)
 
 export default ProductVariantModel

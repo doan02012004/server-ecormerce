@@ -11,16 +11,20 @@ const productSchema = new mongoose.Schema({
         type:String,
         default:''
     },
+    code:{
+        type:String,
+      default:null
+   },
+    categories:[
+        {
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'categories'
+        }
+    ],
     slug:{
         type:String,
         required:true,
         unique:true
-    },
-    type:{
-        type:String,
-        required:true,
-        enum:['simple','configurable'],
-        default:'simple'
     },
     images:[
         {
@@ -34,43 +38,39 @@ const productSchema = new mongoose.Schema({
         type:Boolean,
         default:true
     },
-    // volume:{
-    //     type:Number,
-    //     default:0
-    // },
-    // height:{
-    //     type:Number,
-    //     required:true,
-    //     default:0
-    // },
-    // width:{
-    //     type:Number,
-    //     required:true,
-    //     default:0
-    // },
-    // length:{
-    //     type:Number,
-    //     required:true,
-    //     default:0
-    // },
-    sold:{
-        type:Number,
-        default:0
-    },
     rate:{
         type:Number,
         default:3
+    },
+    ship: {
+        height: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        width: {
+            type: Number,
+            required: true,
+            default: 0
+        },
+        length: {
+            type: Number,
+            required: true,
+            default: 0
+        },
     },
     weight:{
         type:Number,
         default:0
     },
-    categories:[
-        {
-            type:mongoose.Schema.Types.ObjectId,
-            ref:'categories'
-        }
-    ]
+    sku:{
+        type:String,
+        default:''
+   },
+    delete_at:{
+        type:Number,
+        default:null
+    }
 }, {
     timestamps:true, versionKey:false
 })
